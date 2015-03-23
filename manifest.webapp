@@ -1,0 +1,16 @@
+{
+  "name": "Add-on Injector",
+  "role": "addon",
+  "type": "certified",
+  "customizations": [{
+    "filter": ".*",
+    "scripts": ["js/jszip.js", "js/script.js"]
+  }],
+  "permissions": {
+    "device-storage:sdcard": { "access": "readwrite" },
+    "webapps-manage": {},
+    "themeable":{},
+    "settings":{ "access": "readonly" }
+  },
+  "package_path": "application.zip"
+}
