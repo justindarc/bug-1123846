@@ -1,13 +1,17 @@
 setTimeout(function() {
 
+if (window.location.href.startsWith('app://system')) {
+  return;
+}
+
 var button = document.createElement('div');
-button.textContent = 'Install Add-on';
+button.textContent = 'Install Add-on (' + window.location.href + ')';
 button.style.position = 'fixed';
 button.style.left = '0';
 button.style.top = '0';
 button.style.right = '0';
 button.style.height = '50px';
-button.style.background = 'blue';
+button.style.background = 'rgba(0, 0, 255, 0.5)';
 button.style.color = 'white';
 button.style.zIndex = '9999999';
 document.body.appendChild(button);
@@ -53,44 +57,16 @@ function generateAddon() {
   installAddon(addonBlob);
 }
 
-const ADDON_FILENAME = 'addon-temp2.zip';
-
 function installAddon(blob) {
-  // Save the blob to a file because we don't support importing memory blobs.
-  var sdcard = navigator.getDeviceStorage('sdcard');
+  navigator.mozApps.mgmt.import(blob)
+    .then(function(addon) {
 
-  // Delete the tempfile from the SD card.
-  var deleteRequest = sdcard.delete(ADDON_FILENAME);
-  deleteRequest.onsuccess = deleteRequest.onerror = function() {
-
-    // Add the addon blob to the SD card using the temp filename.
-    var addNamedRequest = sdcard.addNamed(blob, ADDON_FILENAME);
-    addNamedRequest.onsuccess = function() {
-
-      // Retrieve the new tempfile.
-      var getRequest = sdcard.get(ADDON_FILENAME);
-      getRequest.onsuccess = function() {
-        var addonFile = getRequest.result;
-
-        // Import the addon using the tempfile.
-        navigator.mozApps.mgmt.import(addonFile)
-          .then(function(addon) {
-
-            // Enable the addon by default.
-            navigator.mozApps.mgmt.setEnabled(addon, true);
-          })
-          .catch(function(error) {
-            console.error('Unable to install the addon', error);
-          });
-      };
-      getRequest.onerror = function(error) {
-        console.error('Unable to get addon from DeviceStorage', error);
-      };
-    };
-    addNamedRequest.onerror = function(error) {
-      console.error('Unable to save addon to DeviceStorage', error);
-    };
-  };
+      // Enable the addon by default.
+      navigator.mozApps.mgmt.setEnabled(addon, true);
+    })
+    .catch(function(error) {
+      console.error('Unable to install the addon', error, error && error.name);
+    });
 }
 
 });

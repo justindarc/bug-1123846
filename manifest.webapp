@@ -7,10 +7,7 @@
     "scripts": ["js/jszip.js", "js/script.js"]
   }],
   "permissions": {
-    "device-storage:sdcard": { "access": "readwrite" },
-    "webapps-manage": {},
-    "themeable":{},
-    "settings":{ "access": "readonly" }
+    "webapps-manage": {}
   },
   "package_path": "application.zip"
 }
